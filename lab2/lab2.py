@@ -25,20 +25,20 @@ def render(time):
     glClear(GL_COLOR_BUFFER_BIT)
 
     # zad 1
-    #drawTriangle()
+    #draw_triangle()
 
     # zad 2
-    #drawRectangle(0, 0, 160, 60)
+    #draw_rectangle(0, 0, 160, 60)
 
     # zad 3
-    #drawRectangleDeform(0, 0, 160, 60, d)
+    #draw_rectangle_deform(0, 0, 160, 60, d)
 
     # zad 4
-    drawSierpinskiCarpet(0, 0, 150, 120, 3)
+    draw_sierpinski_carpet(0, 0, 150, 120, 3)
 
     glFlush()
 
-def drawTriangle():
+def draw_triangle():
     # zmiana koloru wierzchołka przed jego utworzeniem
 
     glColor3f(0.0, 0.0, 0.0)
@@ -51,7 +51,7 @@ def drawTriangle():
     glVertex2f(-50.0, 0.0)
     glEnd()    
 
-def drawRectangle(x, y, width, height):
+def draw_rectangle(x, y, width, height):
     glColor3f(0.6, 0.3, 0.1)
     glBegin(GL_TRIANGLES)
     glVertex2f(x-(width/2), y+(height/2))
@@ -66,7 +66,7 @@ def drawRectangle(x, y, width, height):
     glVertex2f(x+(width/2), y-(height/2))
     glEnd()   
 
-def drawRectangleDeform(x, y, width, height, d = 0.0):
+def draw_rectangle_deform(x, y, width, height, d = 0.0):
     glColor3f(RED_VALUE, GREEN_VALUE, BLUE_VALUE)
     glBegin(GL_TRIANGLES)
     glVertex2f((x-(width/2)) * d, (y+(height/2)) * d)
@@ -82,23 +82,23 @@ def drawRectangleDeform(x, y, width, height, d = 0.0):
     glEnd()
 
 # rysowanie dywanu na zasadzie rysowania prostokątów dookoła pustego miejsca na środku; wywoływanie rekurencyjne
-def drawSierpinskiCarpet(x, y, width, height, level):
+def draw_sierpinski_carpet(x, y, width, height, level):
     if level > 0:
         level -= 1
         width /= 3
         height /= 3
 
-        drawSierpinskiCarpet(x - width, y + height, width, height, level) # lewo-góra
-        drawSierpinskiCarpet(x, y + height, width, height, level) # góra
-        drawSierpinskiCarpet(x + width, y + height, width, height, level) # prawo-góra
-        drawSierpinskiCarpet(x + width, y, width, height, level) # prawo
-        drawSierpinskiCarpet(x + width, y - height ,width, height, level) # prawo-dół
-        drawSierpinskiCarpet(x, y - height, width, height, level) # dół
-        drawSierpinskiCarpet(x - width, y - height, width, height, level) # lewo-dół
-        drawSierpinskiCarpet(x - width, y, width, height, level) # lewo
+        draw_sierpinski_carpet(x - width, y + height, width, height, level) # lewo-góra
+        draw_sierpinski_carpet(x, y + height, width, height, level) # góra
+        draw_sierpinski_carpet(x + width, y + height, width, height, level) # prawo-góra
+        draw_sierpinski_carpet(x + width, y, width, height, level) # prawo
+        draw_sierpinski_carpet(x + width, y - height ,width, height, level) # prawo-dół
+        draw_sierpinski_carpet(x, y - height, width, height, level) # dół
+        draw_sierpinski_carpet(x - width, y - height, width, height, level) # lewo-dół
+        draw_sierpinski_carpet(x - width, y, width, height, level) # lewo
 
     else:
-        drawRectangle(x, y, width, height)
+        draw_rectangle(x, y, width, height)
 
 
 def update_viewport(window, width, height):

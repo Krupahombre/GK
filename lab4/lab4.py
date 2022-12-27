@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
 
+import math as math
+
 from glfw.GLFW import *
 
 from OpenGL.GL import *
@@ -9,12 +11,17 @@ from OpenGL.GLU import *
 
 viewer = [0.0, 0.0, 10.0]
 
-theta = 0.0
+space_pressed = 0
+
+theta, phi = 0.0, 0.0
 pix2angle = 1.0
 
-left_mouse_button_pressed = 0
-mouse_x_pos_old = 0
-delta_x = 0
+scale = 1
+R = 1
+
+left_mouse_button_pressed, right_mouse_button_pressed = 0, 0
+mouse_x_pos_old, mouse_y_pos_old = 0, 0
+delta_x, delta_y = 0, 0
 
 
 def startup():
@@ -25,6 +32,91 @@ def startup():
 
 def shutdown():
     pass
+
+
+def update_glu_look_at(x, y, z):
+    gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+
+
+def calculate_theta_phi_on_button_pressed(theta, phi):
+    if left_mouse_button_pressed:
+        theta += delta_x * pix2angle
+        phi += delta_y * pix2angle
+
+    return theta%360, phi%360
+
+
+def calculate_x_y_x_on_button_pressed(theta, phi):
+    global R   
+
+    new_x = math.cos(theta * math.pi / 180) * math.cos(phi * math.pi / 180) * R 
+    new_y = math.sin(phi * math.pi / 180) * R
+    new_z = math.sin(theta * math.pi / 180) * math.cos(phi * math.pi / 180) * R
+
+    return new_x, new_y, new_z  
+
+
+def scale_fixup():
+    global scale
+    global R
+
+    scale = 0.3 if scale < 0.3 else scale
+    R = 0.3 if R < 0.3 else R
+
+    scale = 1.5 if scale > 1.5 else scale
+    R = 10.0 if R > 10.0 else R
+
+def rotate_object_x_axis():
+    global theta, phi
+
+    theta, phi = calculate_theta_phi_on_button_pressed(theta, phi)
+
+    glRotatef(theta, 0.0, 1.0, 0.0)
+    glRotatef(phi, 1.0, 0.0, 0.0)
+
+
+def rotate_and_scale_object():
+    global theta, phi, scale
+
+    theta, phi = calculate_theta_phi_on_button_pressed(theta, phi)
+    
+    if right_mouse_button_pressed:
+        scale += 0.01 * delta_y
+
+    glRotatef(theta, 0.0, 1.0, 0.0)
+    glRotatef(phi, 1.0, 0.0, 0.0)
+    glScalef(scale, scale, scale)
+
+
+def move_camera_around():
+    global theta, phi, R
+
+    theta, phi = calculate_theta_phi_on_button_pressed(theta, phi)
+
+    if right_mouse_button_pressed:
+        R += 0.01 * delta_y
+
+    x, y, z = calculate_x_y_x_on_button_pressed(theta, phi)
+
+    update_glu_look_at(x, y, z)
+
+
+def move_camera_in_a_proper_way():
+    global theta, phi, R
+
+    theta, phi = calculate_theta_phi_on_button_pressed(theta, phi)
+
+    if right_mouse_button_pressed:
+        R += 0.01 * delta_y    
+        
+    x, y, z = calculate_x_y_x_on_button_pressed(theta, phi)
+
+    if 90 < phi < 270:
+        print(1,phi)
+        update_glu_look_at(x, y, z)
+    else:
+        print(-1,phi)
+        gluLookAt(x, y, z, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0)    
 
 
 def axes():
@@ -81,18 +173,27 @@ def example_object():
 
 
 def render(time):
-    global theta
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    gluLookAt(viewer[0], viewer[1], viewer[2],
-              0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+    gluLookAt(viewer[0], viewer[1], viewer[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 
-    if left_mouse_button_pressed:
-        theta += delta_x * pix2angle
+    # zad 1
+    #rotate_object_x_axis()
 
-    glRotatef(theta, 0.0, 1.0, 0.0)
+    # zad 2
+    #rotate_and_scale_object()
+
+    # zad 3
+    #move_camera_around()
+
+    #zad 4
+    scale_fixup()
+
+    if space_pressed:
+        rotate_and_scale_object()
+    else:
+        move_camera_in_a_proper_way()
 
     axes()
     example_object()
@@ -122,22 +223,34 @@ def keyboard_key_callback(window, key, scancode, action, mods):
     if key == GLFW_KEY_ESCAPE and action == GLFW_PRESS:
         glfwSetWindowShouldClose(window, GLFW_TRUE)
 
+    global space_pressed
+    if key == GLFW_KEY_SPACE and action == GLFW_PRESS:
+        space_pressed = not space_pressed
+
 
 def mouse_motion_callback(window, x_pos, y_pos):
-    global delta_x
-    global mouse_x_pos_old
+    global delta_x, delta_y
+    global mouse_x_pos_old, mouse_y_pos_old
 
     delta_x = x_pos - mouse_x_pos_old
     mouse_x_pos_old = x_pos
 
+    delta_y = y_pos - mouse_y_pos_old
+    mouse_y_pos_old = y_pos
+
 
 def mouse_button_callback(window, button, action, mods):
-    global left_mouse_button_pressed
+    global left_mouse_button_pressed, right_mouse_button_pressed
 
     if button == GLFW_MOUSE_BUTTON_LEFT and action == GLFW_PRESS:
         left_mouse_button_pressed = 1
     else:
         left_mouse_button_pressed = 0
+
+    if button == GLFW_MOUSE_BUTTON_RIGHT and action == GLFW_PRESS:
+        right_mouse_button_pressed = 1
+    else:
+        right_mouse_button_pressed = 0
 
 
 def main():

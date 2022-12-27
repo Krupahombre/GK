@@ -20,11 +20,11 @@ def startup():
     global colorArray
 
     N = 25
-    verticesArray = createVerticesArray(N)
-    colorArray = createRandomColorArray(N)
+    verticesArray = create_vertices_array(N)
+    colorArray = create_random_color_array(N)
 
 
-def createVerticesArray(N):
+def create_vertices_array(N):
     verticesArray = nump.zeros((N, N, 3))
 
 # utworzenie tabeli N elementowej z wypełnieniem komórek wartościami od 0 do 1 w zależności od N
@@ -55,7 +55,7 @@ def createVerticesArray(N):
     return verticesArray
 
 
-def createRandomColorArray(N):
+def create_random_color_array(N):
     randomColorArray = nump.zeros((N, N, 3))
 
     for i in range(0, N):
@@ -71,7 +71,7 @@ def shutdown():
     pass
 
 
-def drawEggModelWithPoints():
+def draw_egg_model_with_points():
     glBegin(GL_POINTS)
     glColor3f(1.0, 0.0, 1.0)
     for i in range(0, N):
@@ -82,7 +82,7 @@ def drawEggModelWithPoints():
     glEnd()
 
 
-def drawEggModelWithLines():
+def draw_egg_model_with_lines():
     glColor3f(1.0, 0.0, 1.0)
     for i in range(0, N - 1):
         for j in range(0, N - 1):
@@ -105,7 +105,7 @@ def drawEggModelWithLines():
             glEnd()    
 
 
-def drawEggModelWithTriangles():
+def draw_egg_model_with_triangles():
     for i in range(0, N - 1):
         for j in range(0, N - 1):
             glBegin(GL_TRIANGLES)
@@ -154,7 +154,7 @@ def drawEggModelWithTriangles():
                         verticesArray[i + 1][j + 1][2])
             glEnd()
 
-def drawEggModelWIthTriangleStrip():
+def draw_egg_model_wIth_triangle_strip():
     glBegin(GL_TRIANGLE_STRIP)
     for i in range(N - 1):
         for j in range(N - 1):
@@ -165,24 +165,28 @@ def drawEggModelWIthTriangleStrip():
                 glVertex3f(verticesArray[i][j][0],
                               verticesArray[i][j][1],
                               verticesArray[i][j][2])
+
                 glColor3f(colorArray[i][j + 1][0],
                              colorArray[i][j + 1][1],
                              colorArray[i][j + 1][2])
                 glVertex3f(verticesArray[i][j + 1][0],
                               verticesArray[i][j + 1][1],
                               verticesArray[i][j + 1][2])
+
                 glColor3f(colorArray[i + 1][j][0],
                              colorArray[i + 1][j][1],
                              colorArray[i + 1][j][2])
                 glVertex3f(verticesArray[i + 1][j][0],
                               verticesArray[i + 1][j][1],
                               verticesArray[i + 1][j][2])
+
                 glColor3f(colorArray[i + 1][j + 1][0],
                              colorArray[i + 1][j + 1][1],
                              colorArray[i + 1][j + 1][2])
                 glVertex3f(verticesArray[i + 1][j + 1][0],
                               verticesArray[i + 1][j + 1][1],
                               verticesArray[i + 1][j + 1][2])
+                              
             else:
                 glColor3f(colorArray[i][j][0],
                              colorArray[i][j][1],
@@ -190,18 +194,21 @@ def drawEggModelWIthTriangleStrip():
                 glVertex3f(verticesArray[i][j][0],
                               verticesArray[i][j][1],
                               verticesArray[i][j][2])
+
                 glColor3f(colorArray[i][j + 1][0],
                              colorArray[i][j + 1][1],
                              colorArray[i][j + 1][2])
                 glVertex3f(verticesArray[i][j + 1][0],
                               verticesArray[i][j + 1][1],
                               verticesArray[i][j + 1][2])
+
                 glColor3f(colorArray[i + 1][j][0],
                              colorArray[i + 1][j][1],
                              colorArray[i + 1][j][0])
                 glVertex3f(verticesArray[i + 1][j][0],
                               verticesArray[i + 1][j][1],
                               verticesArray[i + 1][j][2])
+
                 glColor3f(colorArray[i + 1][j + 1][0],
                              colorArray[i + 1][j + 1][1],
                              colorArray[i + 1][j + 1][0])
@@ -242,19 +249,19 @@ def render(time):
     axes()
 
     # zad 1
-    #drawEggModelWithPoints()
+    #draw_egg_model_with_points()
 
     # zad 2
     #spin(time * 180 / nump.pi)
-    #drawEggModelWithLines()
+    #draw_egg_model_with_lines()
 
     # zad 3
     #spin(time * 180 / nump.pi)
-    #drawEggModelWithTriangles()
+    #draw_egg_model_with_triangles()
 
     # zad 4
     spin(time * 180 / nump.pi)
-    drawEggModelWIthTriangleStrip()
+    draw_egg_model_wIth_triangle_strip()
 
     glFlush()
 

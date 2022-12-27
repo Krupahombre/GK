@@ -1,11 +1,6 @@
 # Computer Graphics Course
 
-This repository was made to collect all programs from **computer graphics course** at **Wroclaw's University of Science and Technology**.
-
-Python libraries used in my programms:
-
-- PyOpenGL glfw
-- numpy
+This repository was made to collect all programs from **computer graphics course** at **Wroclaw's University of Science and Technology** to learn PyOpenGL.
 
 ## Lab2 - OpenGL basics
 
